@@ -95,7 +95,7 @@ contract NftMarketplace {
         ListingItem memory listedItem = s_ListingItems[nftAddress][tokenId];
         if (msg.value < listedItem.price)
             revert NftMarketplace__PriceNotMet(nftAddress, tokenId, listedItem.price);
-        s_proceeds[msg.sender] += msg.value;
+        s_proceeds[listedItem.seller] += msg.value;
         delete (s_ListingItems[nftAddress][tokenId]);
         IERC721(nftAddress).safeTransferFrom(listedItem.seller, msg.sender, tokenId);
         emit ItemBought(msg.sender, nftAddress, tokenId, listedItem.price);
@@ -125,5 +125,17 @@ contract NftMarketplace {
         s_proceeds[msg.sender] = 0;
         (bool success, ) = payable(msg.sender).call{value: proceeds}("");
         if (!success) revert NftMarketplace__WithdrawFailed();
+    }
+
+    function getListing(address nftAddress, uint256 tokenId)
+        external
+        view
+        returns (ListingItem memory)
+    {
+        return s_ListingItems[nftAddress][tokenId];
+    }
+
+    function getProceeds(address seller) external view returns (uint256) {
+        return s_proceeds[seller];
     }
 }
