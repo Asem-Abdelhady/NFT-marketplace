@@ -187,6 +187,23 @@ const { developmentChains } = require("../../helper-hardhat-config")
                   assert.equal(proceedings, "0")
               })
 
-              it("Incerases balance of the owner after withdrawing", async function () {})
+              it("Incerases balance of the owner after withdrawing", async function () {
+                  await nftMarketplaceContract
+                      .connect(user)
+                      .buyItem(basicNft.address, TOKEN_ID, { value: PRICE })
+
+                  const deployerProceedsBefore = await nftMarketplace.getProceeds(deployer.address)
+                  const balanceBeforeWithdrawing = await deployer.getBalance()
+                  const tx = await nftMarketplace.withdrawProceeds()
+                  const txReceipt = await tx.wait(1)
+                  const { gasUsed, effectiveGasPrice } = txReceipt
+                  const gasCost = gasUsed.mul(effectiveGasPrice)
+                  const deployerBalanceAfter = await deployer.getBalance()
+
+                  assert.equal(
+                      deployerBalanceAfter.add(gasCost).toString(),
+                      balanceBeforeWithdrawing.add(deployerProceedsBefore).toString()
+                  )
+              })
           })
       })
