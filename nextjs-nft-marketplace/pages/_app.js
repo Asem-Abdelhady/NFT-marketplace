@@ -6,6 +6,8 @@ import { NotificationProvider } from "web3uikit"
 
 const APP_ID = process.env.NEXT_PUBLIC_APP_ID
 const SERVER_URL = process.env.NEXT_PUBLIC_SERVER_URL
+console.log(APP_ID, " ----", SERVER_URL)
+
 function MyApp({ Component, pageProps }) {
     return (
         <div>
@@ -15,8 +17,10 @@ function MyApp({ Component, pageProps }) {
                 <link rel="icon" href="/favicon.ico" />
             </Head>
             <MoralisProvider appId={APP_ID} serverUrl={SERVER_URL}>
-                <Header />
-                <Component {...pageProps} />
+                <NotificationProvider>
+                    <Header />
+                    <Component {...pageProps} />
+                </NotificationProvider>
             </MoralisProvider>
         </div>
     )
