@@ -3,7 +3,7 @@ import Image from "next/image"
 import { useMoralis, useWeb3Contract } from "react-moralis"
 import nftMarketplaceAbi from "../constants/NftMarketplace.json"
 import nftAbi from "../constants/BasicNft.json"
-import { Card } from "web3uikit"
+import { Card, useNotification } from "web3uikit"
 import { ethers } from "ethers"
 import UpdateListingModal from "./UpdateListingModal"
 
@@ -29,11 +29,25 @@ export default function NFTBox({ price, nftAddress, tokenId, marketplaceAddress,
     const [tokenDescription, setTokenDescription] = useState("")
     const [showModal, setShowModal] = useState("")
     const hideModal = () => setShowModal(false)
+
+    const dispatch = useNotification()
+
     const { runContractFunction: getTokenUri } = useWeb3Contract({
         abi: nftAbi,
         contractAddress: nftAddress,
         functionName: "tokenURI",
         params: {
+            tokenId: tokenId,
+        },
+    })
+
+    const { runContractFunction: buyNft } = useWeb3Contract({
+        abi: nftMarketplaceAbi,
+        contractAddress: marketplaceAddress,
+        functionName: "buyItem",
+        msgValue: price,
+        params: {
+            nftAddress: nftAddress,
             tokenId: tokenId,
         },
     })
@@ -58,7 +72,22 @@ export default function NFTBox({ price, nftAddress, tokenId, marketplaceAddress,
     const isOwnedByUser = seller === account || seller === undefined
     const formattedSellerAddress = isOwnedByUser ? "you" : truncateStr(seller || "", 15)
     const handleCardClick = () => {
-        isOwnedByUser ? setShowModal(true) : console.log("Let's buy!")
+        isOwnedByUser
+            ? setShowModal(true)
+            : buyNft({
+                  onError: (error) => console.log(error),
+                  onSuccess: handleBuyItemSuccess,
+              })
+    }
+
+    const handleBuyItemSuccess = async (tx) => {
+        tx.wait(1)
+        dispatch({
+            type: "sucess",
+            message: "Item bought",
+            title: "A new item is bought please refresh",
+            position: "topR",
+        })
     }
     return (
         <div>
