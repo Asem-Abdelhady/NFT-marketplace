@@ -15,10 +15,10 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
 
     console.log("----------------------")
 
-    if (!developmentChains.includes(network.name) && process.env.ETHERSCAN_API_KEY) {
-        log("Verifying...")
-        await verify(basicNft.address, args)
-    }
+    // if (!developmentChains.includes(network.name) && process.env.ETHERSCAN_API_KEY) {
+    //     log("Verifying...")
+    //     await verify(basicNft.address, args)
+    // }
 }
 
 module.exports.tags = ["all", "nftmarketplace"]
