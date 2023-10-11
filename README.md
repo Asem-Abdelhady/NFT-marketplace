@@ -46,4 +46,4 @@ To sell an NFT you own go to sell NFT:
 
 Put the NFT address for your NFT and its token id. You are free to choose whateer price you want. If someone already bought a NFT you lsited you will see the balance in proceeds where you can withdraw them anytime you want. 
 ## Acknowledgment
-This marketplace is simply me following the [Patrick](https://github.com/PatrickAlphaC) in his course. I appreciate his dedication to teach the community Ethereum principles.
+This marketplace is simply me following [Patrick](https://github.com/PatrickAlphaC) in his course. I appreciate his dedication to teach the community about Ethereum principles.
